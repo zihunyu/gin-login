@@ -12,8 +12,13 @@ type MYSQL struct {
 	DBName   string `mapstructure:"dbname"`
 }
 
+type App struct {
+	Port string `mapstructure:"port"`
+}
+
 // Config 定义配置结构体
 type Config struct {
+	App   App   `mapstructure:"app"`
 	MYSQL MYSQL `mapstructure:"mysql"`
 }
 

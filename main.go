@@ -6,6 +6,7 @@ import (
 
 	"github.com/zihunyu/gin-login/config"
 	"github.com/zihunyu/gin-login/model"
+	"github.com/zihunyu/gin-login/router"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -32,10 +33,12 @@ func main() {
 		log.Fatal("数据库迁移失败:", err)
 	}
 
-	// 打印配置
-	log.Printf("mysql host: %s", cfg.MYSQL.Host)
-	log.Printf("mysql port: %s", cfg.MYSQL.Port)
-	log.Printf("mysql user: %s", cfg.MYSQL.User)
-	log.Printf("mysql password: %s", cfg.MYSQL.Password)
-	log.Printf("mysql dbname: %s", cfg.MYSQL.DBName)
+	// 初始化路由
+	r := router.SetupRouter(db)
+
+	// 启动 HTTP 服务
+	if err := r.Run(":" + cfg.App.Port); err != nil {
+		log.Fatal("服务启动失败:", err)
+	}
+
 }
