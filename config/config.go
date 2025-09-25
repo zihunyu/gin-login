@@ -4,36 +4,51 @@ import (
 	"github.com/spf13/viper"
 )
 
-type MYSQL struct {
-	Host     string `mapstructure:"host"`
-	Port     string `mapstructure:"port"`
-	User     string `mapstructure:"user"`
-	Password string `mapstructure:"password"`
-	DBName   string `mapstructure:"dbname"`
+type JWTConfig struct {
+	Secret        string `mapstructure:"secret"`
+	ExpireMinutes int    `mapstructure:"expire_minutes"`
 }
 
-type App struct {
-	Port string `mapstructure:"port"`
+type LoginLimitConfig struct {
+	WindowMinutes int `mapstructure:"window_minutes"`
+	MaxFailures   int `mapstructure:"max_failures"`
+	LockMinutes   int `mapstructure:"lock_minutes"`
+}
+
+type RedisConfig struct {
+	Addr     string `mapstructure:"addr"`
+	Password string `mapstructure:"password"`
+	DB       int    `mapstructure:"db"`
 }
 
 // Config 定义配置结构体
 type Config struct {
-	App   App   `mapstructure:"app"`
-	MYSQL MYSQL `mapstructure:"mysql"`
+	JWT            JWTConfig        `mapstructure:"jwt"`
+	LoginLimit     LoginLimitConfig `mapstructure:"login_limit"`
+	Redis          RedisConfig      `mapstructure:"redis"`
+	RequestTimeout int              `mapstructure:"request_timeout"`
+	App            struct {
+		Port string
+	}
+	MySQL struct {
+		Host     string
+		Port     string
+		User     string
+		Password string
+		DBName   string `mapstructure:"dbname"`
+	} `mapstructure:"mysql"`
 }
 
-// LoadConfig 读取config/config.yaml 并解析到Config结构体
+// LoadConfig 读取 config/config.yaml 并解析到 Config 结构体
 func LoadConfig() (*Config, error) {
 	viper.SetConfigFile("config/config.yaml")
 	viper.AutomaticEnv()
 	if err := viper.ReadInConfig(); err != nil {
 		return nil, err
 	}
-
 	var cfg Config
 	if err := viper.Unmarshal(&cfg); err != nil {
 		return nil, err
 	}
 	return &cfg, nil
-
 }

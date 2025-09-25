@@ -6,3 +6,16 @@ mysql:
   user: "root"
   password: "BIMbim@123321..."
   dbname: "test"
+jwt:
+  secret: "please_change_this_secret_in_prod"
+  expire_minutes: 60
+
+login_limit:
+  window_minutes: 10
+  max_failures: 5
+  lock_minutes: 30
+
+redis:
+  addr: "192.168.0.67:6375"
+  password: "bim123456"
+  db: 0  
